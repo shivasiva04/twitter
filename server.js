@@ -18,15 +18,11 @@ const app = express();
 dotenv.config();
 
 // Middleware
-app.use(express.json(
-    {
-        limit:"10mb"
-    }
-));
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173',  // for local dev
     credentials: true
 }));
 
@@ -37,12 +33,16 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
-app.use('/api/posts', postRoute); 
-app.use("/api/notifications", notificationRoutes);
+app.use('/api/posts', postRoute);
+app.use('/api/notifications', notificationRoutes);
 
+// Default Route to avoid 404
+app.get('/', (req, res) => {
+    res.send('🚀 Twitter Clone API is running...');
+});
 
 // Server Start
 const PORT = process.env.PORT || 5000;
